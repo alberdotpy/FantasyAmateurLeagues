@@ -28,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['web-production-784b0.up.railway.app']
 
+CORS_ALLOW_ORIGINS = [
+    "https://web-production-784b0.up.railway.app",
+]
 
 # Application definition
 
