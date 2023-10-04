@@ -31,8 +31,7 @@ ALLOWED_HOSTS = ['web-production-784b0.up.railway.app',
 
 CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1',
                         'https://web-production-784b0.up.railway.app',
-                        'https://*.up.railway.app*',
-                        'https://amateurfantasyleague.*',
+                        'https://amateurfantasyleague.up.railway.app',
                         ]
 
 # Application definition
