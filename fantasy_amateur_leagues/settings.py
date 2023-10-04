@@ -27,8 +27,7 @@ SECRET_KEY = 'django-insecure-a^slh@v1qh$k1a$ox3)+_m5a6f0)1@z-b$%k(p9vb%0w80#-3i
 DEBUG = True
 
 ALLOWED_HOSTS = ['web-production-784b0.up.railway.app',
-                'https://amateurfantasyleague.*',
-                'https://*.up.railway.app*',]
+                'amateurfantasyleague.up.railway.app']
 
 CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1',
                         'https://web-production-784b0.up.railway.app',
