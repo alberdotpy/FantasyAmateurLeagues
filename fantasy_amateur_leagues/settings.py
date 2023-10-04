@@ -28,9 +28,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['web-production-784b0.up.railway.app']
 
-CORS_ALLOW_ORIGINS = [
-    "https://web-production-784b0.up.railway.app",
-]
+CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1',
+                        'https://web-production-784b0.up.railway.app',
+                        'https://*web-production-*.up.railway.app*',
+                        ]
 
 # Application definition
 
