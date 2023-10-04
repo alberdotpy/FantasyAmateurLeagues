@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <h1>Create a New League</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Create League</button>
+  </form>
+  <a href="{% url 'leagues' %}">Back to Leagues</a>
+{% endblock %}

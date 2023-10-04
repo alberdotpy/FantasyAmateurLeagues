@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+  <h1>
+      {{ league.name }}
+      {% if league.sport.id == 1 %}
+      <span class="icon">&#9917;</span>
+      {% endif %}
+      {% if league.sport.id == 2 %}
+      <span class="icon">&#127936;</span>
+      {% endif %}
+  </h1>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'league' league.id %}">Ranking</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'league_predictions' league.id %}">Predictions</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'league_positions' league.id %}">Team Positions</a>
+      </li>
+      {% if user == league.creator %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'add_team' league.id %}">Add Team</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'add_match' league.id %}">Add Match</a>
+      </li>
+        {% endif %}
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Match</th>
+            <th>Date</th>
+            <th>Result</th>
+            <th>Prediction</th>
+            <th>Status</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for prediction_data in predictions_data %}
+            <tr>
+              <td>{{ prediction_data.match.team1 }} vs. {{ prediction_data.match.team2 }}</td>
+              <td>{{ prediction_data.match.match_date }}</td>
+              <td>
+                {{ prediction_data.result_team1 }} - {{ prediction_data.result_team2 }}
+                {% if user == league.creator %}
+                <a href="{% url 'edit_match_result' league_id=league.id match_id=prediction_data.match.id %}">
+                  <i class="fa fa-edit"></i>
+                </a>
+                {% endif %}
+              </td>
+              <td>
+                {{ prediction_data.prediction_team1 }} - {{ prediction_data.prediction_team2 }}
+                {% if prediction_data.match.match_date|can_edit_match %}
+                <a href="{% url 'edit_prediction' league_id=league.id match_id=prediction_data.match.id %}">
+                  <i class="fa fa-edit"></i>
+                </a>
+                <a href="{% url 'delete_prediction' league_id=league.id match_id=prediction_data.match.id %}">
+                  <i class="fa fa-trash"></i>
+                </a>
+                {% endif %}
+              </td>
+              <td>{{ prediction_data.status }}</td>
+              <td>{{ prediction_data.points }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="6">You have no predictions for this league.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h2>Matches without Predictions</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Match</th>
+            <th>Date</th>
+            <th>Result</th>
+            <th>Prediction</th>
+            <th>Status</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for match_data in matches_without_predictions %}
+            <tr>
+              <td>{{ match_data.team1 }} vs. {{ match_data.team2 }}</td>
+              <td>{{ match_data.match_date }}</td>
+              <td>{{ match_data.result_team1 }} - {{ match_data.result_team2 }}</td>
+              <td>
+                {% if match_data.match_date|can_edit_match %}
+                <a href="{% url 'create_prediction' league_id=league.id match_id=match_data.id %}">
+                  <i class="fa fa-plus-circle"></i>
+                </a>
+                 {% endif %}
+              </td>
+              <td>None</td>
+              <td>None</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="3">All matches are predicted.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <hr>
+  <div>
+    <p class="right"><small>League created by : {{ league.creator }}</small></p>
+  </div>
+  <script src="{% static 'leagues.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,95 @@
+<!-- leagues.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>My Leagues</h2>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>League Name</th>
+        <th>Members</th>
+        <th>Teams</th>
+        <th>Created On</th>
+        <th>Created By</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for membership in user_leagues %}
+        <tr>
+          <td>
+            {% if membership.league.sport.id == 1 %}
+              {{ membership.league.name }} <span class="icon">&#9917;</span>
+            {% elif membership.league.sport.id == 2 %}
+              {{ membership.league.name }} <span class="icon">&#127936;</span>
+            {% else %}
+              {{ membership.league.name }}
+            {% endif %}
+          </td>
+          <td>{{ membership.league.members.count }}</td>
+          <td>{{ membership.league.team_set.count }}</td>
+          <td>{{ membership.league.date_created }}</td>
+          <td>{{ membership.league.creator }}</td>
+          <td>
+            {% if user in membership.league.members.all %}
+              <a href="{% url 'league' membership.league.id %}" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> <!-- Icon for Enter -->
+              </a>
+              {% if user == membership.league.creator %}
+                <a href="{% url 'participate_requests' league_id=membership.league.id %}" class="btn btn-info">
+                  <i class="fas fa-user-friends"></i> <!-- Icon for Participation Requests -->
+                </a>
+              {% endif %}
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h2>Other Leagues</h2>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>League Name</th>
+        <th>Members</th>
+        <th>Teams</th>
+        <th>Created On</th>
+        <th>Created By</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for league in other_leagues %}
+        <tr>
+          <td>
+            {% if league.sport.id == 1 %}
+              {{ league.name }} <span class="icon">&#9917;</span>
+            {% elif league.sport.id == 2 %}
+              {{ league.name }} <span class="icon">&#127936;</span>
+            {% else %}
+              {{ league.name }}
+            {% endif %}
+          </td>
+          <td>{{ league.members.count }}</td>
+          <td>{{ league.team_set.count }}</td>
+          <td>{{ league.date_created }}</td>
+          <td>{{ league.creator }}</td>
+          <td>
+              {% if user == membership.league.creator %}
+                <a href="{% url 'participate_requests' league_id=membership.league.id %}" class="btn btn-info">
+                  <i class="fas fa-user-friends"></i>
+                </a>
+              {% endif %}
+              <a href="{% url 'request_participation' league_id=league.id %}" class="btn btn-success">
+                <i class="fas fa-user-plus"></i>
+              </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

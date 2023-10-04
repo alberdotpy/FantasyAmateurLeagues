@@ -1,0 +1,16 @@
+<!-- leagues/participate_in_league.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <h2>Participate in "{{ league.name }}"</h2>
+  <p>{{ league.description }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Join League</button>
+  </form>
+
+  <a href="{% url 'leagues' %}" class="btn btn-secondary">Cancel</a>
+{% endblock %}

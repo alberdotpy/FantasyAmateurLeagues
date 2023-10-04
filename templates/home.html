@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- Banner -->
+<section id="banner">
+    <div class="content">
+        <h1>Welcome to Fantasy Amateur Leagues</h1>
+        <p>This is the home page of our fantasy basketball league app.</p>
+        {% if user.is_authenticated %}
+        {% else %}
+        <a href="/login/" class="button scrolly"><button type="submit" class="btn btn-primary">Enter</button></a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

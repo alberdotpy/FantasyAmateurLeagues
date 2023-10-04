@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+  <h1>
+      {{ league.name }}
+      {% if league.sport.id == 1 %}
+      <span class="icon">&#9917;</span>
+      {% endif %}
+      {% if league.sport.id == 2 %}
+      <span class="icon">&#127936;</span>
+      {% endif %}
+  </h1>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'league' league.id %}">Ranking</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'league_predictions' league.id %}">Predictions</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'league_positions' league.id %}">Team Positions</a>
+      </li>
+      {% if user == league.creator %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'add_team' league.id %}">Add Team</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'add_match' league.id %}">Add Match</a>
+      </li>
+        {% endif %}
+    </ul>
+  </nav>
+
+    <div class="container">
+      <div>
+        <table class="table">
+          <thead>
+              <tr>
+                  <th>Team</th>
+                  <th>Matches Played</th>
+                  <th>Wins</th>
+                  <th>Draws</th>
+                  <th>Losses</th>
+                  <th>Scored for</th>
+                  <th>Scored against</th>
+                  <th>Points</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for team_data in team_matches_data %}
+                  <tr>
+                      <td>{{ team_data.team }}</td>
+                      <td>{{ team_data.matches_played }}</td>
+                      <td>{{ team_data.wins }}</td>
+                      <td>{{ team_data.draws }}</td>
+                      <td>{{ team_data.losses }}</td>
+                      <td>{{ team_data.goals_scored }}</td>
+                      <td>{{ team_data.goals_conceded }}</td>
+                      <td>{{ team_data.points }}</td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+      </div>
+    </div>
+    <hr>
+    <div>
+        <p class="right"><small>League created by : {{ league.creator }}</small></p>
+    </div>
+  <script src="{% static 'leagues.js' %}"></script>
+{% endblock %}
+

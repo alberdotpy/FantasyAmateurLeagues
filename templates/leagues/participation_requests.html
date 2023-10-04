@@ -1,0 +1,18 @@
+<!-- leagues/participation_requests.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Pending Participation Requests for {{ league.name }}</h2>
+  <ul>
+    {% for request_user in pending_requests %}
+      <li>
+        {{ request_user.username }}
+        <a href="{% url 'accept_participation' league.id request_user.id %}" class="btn btn-success">Accept</a>
+        <a href="{% url 'reject_participation' league.id request_user.id %}" class="btn btn-danger">Reject</a>
+      </li>
+    {% empty %}
+      <p>No pending requests.</p>
+    {% endfor %}
+  </ul>
+{% endblock %}

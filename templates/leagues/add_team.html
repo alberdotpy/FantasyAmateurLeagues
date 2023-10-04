@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <h1>
+      {{ league.name }}
+      {% if league.sport.id == 1 %}
+      <span class="icon">&#9917;</span>
+      {% endif %}
+      {% if league.sport.id == 2 %}
+      <span class="icon">&#127936;</span>
+      {% endif %}
+  </h1>
+
+  <h2>Add Team</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add Team</button>
+  </form>
+  <br>
+  <a href="{% url 'league' league_id=league_id %}">Back to League</a>
+{% endblock %}

@@ -1,0 +1,1 @@
+web: gunicorn fantasy_amateur_leagues.wsgi

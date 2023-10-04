@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+  <h1>{{ league.name }} - {{ league.sport }}
+      {% if league.sport == Football %}
+      <span class="icon">&#9917;</span>
+      {% endif %}
+      {% if league.sport == Basketball %}
+      <span class="icon">&#127936;</span>
+      {% endif %}
+    </h1>
+
+  <ul class="nav nav-tabs" id="myTabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">Details</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="predictions-tab" data-toggle="tab" href="#predictions" role="tab" aria-controls="predictions" aria-selected="false">Predictions</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="ranking-tab" data-toggle="tab" href="#ranking" role="tab" aria-controls="ranking" aria-selected="false">Ranking</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="team-positions-tab" data-toggle="tab" href="#team-positions" role="tab" aria-controls="team-positions" aria-selected="false">Team Positions</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabsContent">
+    <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+      <table class="table">
+          <thead>
+              <tr>
+                  <th>User</th>
+                  <th>Number of Predictions</th>
+                  <th>Total Points</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for member_data in members_data %}
+                  <tr>
+                      <td>{{ member_data.user }}</td>
+                      <td>{{ member_data.num_predictions }}</td>
+                      <td>{{ member_data.total_points }}</td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+  </div>
+    <div class="tab-pane fade" id="predictions" role="tabpanel" aria-labelledby="predictions-tab">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Match</th>
+            <th>Date</th>
+            <th>Result</th>
+            <th>Prediction</th>
+            <th>Status</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for match in match_results %}
+            {% with prediction=user_predictions|get_prediction_by_match:match.id %}
+            <tr>
+                <td>{{ match }}</td>
+                <td>{{ match.match_date }}</td>
+                <td>{{ match.result_team1 }} - {{ match.result_team2 }}</td>
+                {% if prediction %}
+                <td>{{ prediction.prediction_team1 }} - {{ prediction.prediction_team2 }}</td>
+                {% if match.result_team1 is not None and match.result_team2 is not None %}
+                {% if prediction.prediction_team1 > prediction.prediction_team2 and match.result_team1 > match.result_team2 %}
+                <td>Win</td>
+                <td>3</td>
+                {% elif prediction.prediction_team1 < prediction.prediction_team2 and match.result_team1 < match.result_team2 %}
+                <td>Win</td>
+                <td>3</td>
+                {% else %}
+                <td>Lose</td>
+                <td>0</td>
+                {% endif %}
+                {% else %}
+                <td>Pending</td>
+                <td>-</td>
+                {% endif %}
+                {% else %}
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                {% endif %}
+            </tr>
+            {% endwith %}
+            {% empty %}
+            <tr>
+                <td colspan="6">You have no predictions for this league.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+      </table>
+        {% if user == league.creator %}
+        <!-- Display the form for adding matches -->
+        <h3>Add Match</h3>
+        <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-success">Add Match</button>
+        </form>
+
+  {% endif %}
+    </div>
+    <div class="tab-pane fade" id="ranking" role="tabpanel" aria-labelledby="ranking-tab">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>User</th>
+            <th>Total Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for member_data in members_data %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ member_data.user }}</td>
+              <td>{{ member_data.total_points }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="3">No members found in the league.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="tab-pane fade" id="team-positions" role="tabpanel" aria-labelledby="team-positions-tab">
+      <table class="table">
+          <thead>
+              <tr>
+                  <th>Team</th>
+                  <th>Matches Played</th>
+                  <th>Wins</th>
+                  <th>Draws</th>
+                  <th>Losses</th>
+                  <th>Scored for</th>
+                  <th>Scored against</th>
+                  <th>Points</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for team_data in team_matches_data %}
+                  <tr>
+                      <td>{{ team_data.team }}</td>
+                      <td>{{ team_data.matches_played }}</td>
+                      <td>{{ team_data.wins }}</td>
+                      <td>{{ team_data.draws }}</td>
+                      <td>{{ team_data.losses }}</td>
+                      <td>{{ team_data.goals_scored }}</td>
+                      <td>{{ team_data.goals_conceded }}</td>
+                      <td>{{ team_data.points }}</td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+
+    </div>
+
+    <hr>
+      <p class="right"><small>League created by : {{ league.creator }}</small></p>
+  </div>
+  <script src="{% static 'leagues.js' %}"></script>
+{% endblock %}
