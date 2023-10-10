@@ -101,7 +101,14 @@
             <tr>
               <td>{{ match_data.team1 }} vs. {{ match_data.team2 }}</td>
               <td>{{ match_data.match_date }}</td>
-              <td>{{ match_data.result_team1 }} - {{ match_data.result_team2 }}</td>
+              <td>
+                {% if user == league.creator %}
+                {{ match_data.result_team1 }} - {{ match_data.result_team2 }}
+                <a href="{% url 'edit_match_result' league_id=league.id match_id=match_data.id %}">
+                  <i class="fa fa-edit"></i>
+                </a>
+                {% endif %}
+              </td>
               <td>
                 {% if match_data.match_date|can_edit_match %}
                 <a href="{% url 'create_prediction' league_id=league.id match_id=match_data.id %}">
